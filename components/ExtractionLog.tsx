@@ -105,7 +105,6 @@ const ExtractionLog: React.FC<ExtractionLogProps> = ({
         
         let newValues = { ...item, ...updates };
         
-        // If product changed, update the rates automatically from the forest cost config
         if (updates.productTypeId) {
           const costConfig = costs.find(c => c.forestId === prev.forestId && c.productTypeId === updates.productTypeId);
           if (costConfig) {
@@ -419,9 +418,23 @@ const ExtractionLog: React.FC<ExtractionLogProps> = ({
                 </div>
             </div>
 
-            <div className="flex justify-end gap-3 pt-4 border-t">
-              <button type="button" onClick={() => {setIsAdding(false); setEditingId(null); setDeleteConfirmId(null);}} className="px-6 py-2.5 text-slate-600 font-bold">Cancel</button>
-              <button type="submit" className="bg-green-700 text-white px-8 py-2.5 rounded-xl font-bold shadow-lg">Save Return</button>
+            <div className="flex justify-between items-center pt-4 border-t">
+              {editingId && (
+                <div className="flex items-center gap-2">
+                  {deleteConfirmId === editingId ? (
+                    <div className="flex items-center gap-2 animate-fadeIn bg-red-100 p-2 rounded-xl border border-red-200">
+                       <button type="button" onClick={() => executeDelete(editingId)} className="px-6 py-2 bg-red-600 text-white rounded-lg font-bold text-sm">YES, DELETE</button>
+                       <button type="button" onClick={() => setDeleteConfirmId(null)} className="px-4 py-2 bg-white text-slate-600 rounded-lg font-bold text-sm">CANCEL</button>
+                    </div>
+                  ) : (
+                    <button type="button" onClick={() => setDeleteConfirmId(editingId)} className="px-6 py-2.5 bg-red-50 text-red-600 rounded-xl font-bold">🗑️ Delete Record</button>
+                  )}
+                </div>
+              )}
+              <div className="flex gap-3 ml-auto">
+                <button type="button" onClick={() => {setIsAdding(false); setEditingId(null); setDeleteConfirmId(null);}} className="px-6 py-2.5 text-slate-600 font-bold">Cancel</button>
+                <button type="submit" className="bg-green-700 text-white px-8 py-2.5 rounded-xl font-bold shadow-lg">Save Return</button>
+              </div>
             </div>
           </form>
         </div>
@@ -468,7 +481,14 @@ const ExtractionLog: React.FC<ExtractionLogProps> = ({
                       <div className="flex justify-end gap-2">
                          <button onClick={() => setViewingInvoice(ex)} className="p-2.5 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-xl transition-all">📄</button>
                          <button onClick={() => handleEdit(ex)} className="p-2.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all">✏️</button>
-                         <button onClick={() => setDeleteConfirmId(ex.id)} className="p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all">🗑️</button>
+                         {isConfirming ? (
+                            <div className="flex justify-end items-center gap-2">
+                              <button onClick={() => executeDelete(ex.id)} className="bg-red-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-lg">DELETE</button>
+                              <button onClick={() => setDeleteConfirmId(null)} className="bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold">CANCEL</button>
+                            </div>
+                         ) : (
+                            <button onClick={() => setDeleteConfirmId(ex.id)} className="p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all">🗑️</button>
+                         )}
                       </div>
                     </td>
                   </tr>

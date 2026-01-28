@@ -26,14 +26,14 @@ const AIInsights: React.FC<AIInsightsProps> = ({ forests, extractions, products 
           totalTransportCost: extractions.reduce((sum, e) => sum + e.transportCost, 0),
         },
         volumeSplit: {
-          resold: extractions.filter(e => e.destination === 'Resold').reduce((sum, e) => sum + e.quantity, 0),
-          ownUse: extractions.filter(e => e.destination === 'Own Use').reduce((sum, e) => sum + e.quantity, 0),
+          resold: extractions.filter(e => e.destination === 'Resold').reduce((sum, e) => sum + e.totalQuantity, 0),
+          ownUse: extractions.filter(e => e.destination === 'Own Use').reduce((sum, e) => sum + e.totalQuantity, 0),
         },
         recentTransactions: extractions.slice(0, 10).map(e => ({
           forest: forests.find(f => f.id === e.forestId)?.name,
-          product: products.find(p => p.id === e.productTypeId)?.name,
+          productCount: e.items.length,
           dest: e.destination,
-          qty: e.quantity,
+          qty: e.totalQuantity,
           net: e.salePrice - (e.harvestingCost + e.transportCost)
         }))
       };
