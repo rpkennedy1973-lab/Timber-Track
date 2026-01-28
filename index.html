@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimberTrack Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        h1, h2, h3, h4, .font-outfit {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* 
+           THE ULTIMATE PRINT FIX
+           This block forces the browser to ignore the app's 'h-screen' and 'overflow-hidden'
+           layout and treat the invoice as a standard, full-page document.
+        */
+        @media print {
+            /* 1. Hide the UI elements we don't want */
+            .print-hide, 
+            aside, 
+            nav, 
+            header, 
+            .bg-black\/50 { /* Hide the modal backdrop blur/color */
+                display: none !important;
+            }
+
+            /* 2. NEUTRALIZE all parent layout constraints */
+            /* This is critical: if any parent has overflow:hidden or fixed height, print fails. */
+            html, 
+            body, 
+            #root, 
+            #root > div, 
+            main, 
+            .max-w-7xl, 
+            .modal-container {
+                height: auto !important;
+                min-height: 0 !important;
+                max-height: none !important;
+                overflow: visible !important;
+                position: static !important;
+                display: block !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+            }
+
+            /* 3. Transform the Modal into a static document element */
+            .fixed.inset-0 {
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                display: block !important;
+                width: 100% !important;
+                height: auto !important;
+                z-index: auto !important;
+                background: white !important;
+            }
+
+            #printable-invoice {
+                display: block !important;
+                width: 100% !important;
+                max-width: none !important;
+                max-height: none !important;
+                height: auto !important;
+                overflow: visible !important;
+                box-shadow: none !important;
+                border: none !important;
+                border-radius: 0 !important;
+                padding: 15mm !important; /* Standard print margin */
+            }
+
+            /* 4. Content flow settings */
+            .flex-1.overflow-y-auto {
+                overflow: visible !important;
+                height: auto !important;
+                display: block !important;
+            }
+
+            /* 5. Force Professional Colors for PDF */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+
+            /* Table rendering optimizations */
+            table { width: 100% !important; border-collapse: collapse !important; page-break-inside: auto !important; }
+            tr { page-break-inside: avoid !important; page-break-after: auto !important; }
+            .invoice-footer { page-break-inside: avoid !important; }
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "recharts": "https://esm.sh/recharts@^3.7.0",
+    "@google/genai": "https://esm.sh/@google/genai@^1.38.0",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4"
+  }
+}
+</script>
+</head>
+<body>
+    <div id="root"></div>
+</body>
+</html>
