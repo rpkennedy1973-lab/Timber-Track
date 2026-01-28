@@ -31,6 +31,8 @@ export interface CompanyDetails {
   name: string;
   address: string;
   vatNumber: string;
+  phone?: string;  // Added phone field
+  email?: string;  // Added email field
   forestVatRate: number;    // e.g., 5 for 5%
   harvesterVatRate: number; // e.g., 23 for 23%
   resaleVatRate: number;    // New field for customer resale

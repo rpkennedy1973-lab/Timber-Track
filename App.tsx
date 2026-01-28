@@ -41,6 +41,8 @@ const App: React.FC = () => {
       name: 'Your Timber Co. Ltd.', 
       address: '123 Forest View, Timberland Way', 
       vatNumber: '',
+      phone: '',
+      email: '',
       forestVatRate: 5,
       harvesterVatRate: 23,
       resaleVatRate: 23

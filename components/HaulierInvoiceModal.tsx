@@ -95,6 +95,10 @@ const HaulierInvoiceModal: React.FC<HaulierInvoiceModalProps> = ({ invoice, haul
                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest border-b pb-1 mb-2">Service Requester</p>
                 <p className="text-lg font-bold text-slate-900 leading-tight">{companyDetails.name}</p>
                 <p className="text-slate-600 text-xs mt-1 whitespace-pre-line">{companyDetails.address}</p>
+                <div className="mt-2 space-y-0.5">
+                  {companyDetails.phone && <p className="text-[10px] text-slate-500 font-medium tracking-tight">T: {companyDetails.phone}</p>}
+                  {companyDetails.email && <p className="text-[10px] text-slate-500 font-medium tracking-tight">E: {companyDetails.email}</p>}
+                </div>
                 {companyDetails.vatNumber && <p className="text-[10px] font-black mt-2 uppercase border border-slate-200 inline-block px-2 py-0.5 rounded">VAT: {companyDetails.vatNumber}</p>}
               </div>
             </div>

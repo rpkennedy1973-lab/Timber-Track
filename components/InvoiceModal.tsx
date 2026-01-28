@@ -168,7 +168,11 @@ const InvoiceModal: React.FC<InvoiceModalProps> = ({ extraction, forest, harvest
                 <div>
                   <p className="text-lg font-bold text-slate-900 leading-tight">{companyDetails.name}</p>
                   <p className="text-slate-600 text-xs mt-1 whitespace-pre-line">{companyDetails.address}</p>
-                  {companyDetails.vatNumber && <p className="text-[10px] font-black mt-2 uppercase border border-slate-200 inline-block px-2 py-0.5 rounded">VAT: {companyDetails.vatNumber}</p>}
+                  <div className="mt-3 space-y-0.5">
+                    {companyDetails.phone && <p className="text-[10px] text-slate-500 font-medium">T: {companyDetails.phone}</p>}
+                    {companyDetails.email && <p className="text-[10px] text-slate-500 font-medium">E: {companyDetails.email}</p>}
+                    {companyDetails.vatNumber && <p className="text-[10px] font-black mt-2 uppercase border border-slate-200 inline-block px-2 py-0.5 rounded">VAT: {companyDetails.vatNumber}</p>}
+                  </div>
                 </div>
               </div>
             </div>
