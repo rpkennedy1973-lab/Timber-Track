@@ -43,6 +43,7 @@ const App: React.FC = () => {
       vatNumber: '',
       phone: '',
       email: '',
+      iban: '',
       forestVatRate: 5,
       harvesterVatRate: 23,
       resaleVatRate: 23

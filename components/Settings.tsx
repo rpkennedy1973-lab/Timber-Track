@@ -59,15 +59,27 @@ const Settings: React.FC<SettingsProps> = ({ companyDetails, setCompanyDetails }
               />
             </div>
           </div>
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">VAT Number (Optional)</label>
-            <input
-              type="text"
-              className="w-full px-4 py-2.5 border rounded-xl outline-none focus:ring-2 focus:ring-green-500 font-medium"
-              value={companyDetails.vatNumber}
-              onChange={e => setCompanyDetails({...companyDetails, vatNumber: e.target.value})}
-              placeholder="e.g. IE1234567A"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-1">VAT Number (Optional)</label>
+              <input
+                type="text"
+                className="w-full px-4 py-2.5 border rounded-xl outline-none focus:ring-2 focus:ring-green-500 font-medium"
+                value={companyDetails.vatNumber}
+                onChange={e => setCompanyDetails({...companyDetails, vatNumber: e.target.value})}
+                placeholder="e.g. IE1234567A"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-1">Company Bank IBAN</label>
+              <input
+                type="text"
+                className="w-full px-4 py-2.5 border rounded-xl outline-none focus:ring-2 focus:ring-green-500 font-medium"
+                value={companyDetails.iban || ''}
+                onChange={e => setCompanyDetails({...companyDetails, iban: e.target.value})}
+                placeholder="IE00 XXXX ..."
+              />
+            </div>
           </div>
         </div>
 

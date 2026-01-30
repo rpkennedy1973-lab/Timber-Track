@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Forest, ProductType, ForestProductCost } from '../types';
 
@@ -22,6 +23,9 @@ const ForestManager: React.FC<ForestManagerProps> = ({ forests, onSave, onDelete
     description: '',
     ownerName: '',
     ownerAddress: '',
+    ownerEmail: '',
+    ownerIban: '',
+    fellingLicenseNumber: '',
   };
 
   const [formData, setFormData] = useState<Omit<Forest, 'id'>>(emptyForm);
@@ -35,6 +39,9 @@ const ForestManager: React.FC<ForestManagerProps> = ({ forests, onSave, onDelete
       description: forest.description,
       ownerName: forest.ownerName,
       ownerAddress: forest.ownerAddress,
+      ownerEmail: forest.ownerEmail || '',
+      ownerIban: forest.ownerIban || '',
+      fellingLicenseNumber: forest.fellingLicenseNumber || '',
     });
     setIsAdding(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -140,26 +147,59 @@ const ForestManager: React.FC<ForestManagerProps> = ({ forests, onSave, onDelete
               </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-slate-50 rounded-2xl border border-slate-200">
-               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1">Owner / Entity Name</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.ownerName}
-                  onChange={e => setFormData({...formData, ownerName: e.target.value})}
-                  className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none bg-white shadow-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1">Owner Address</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.ownerAddress}
-                  onChange={e => setFormData({...formData, ownerAddress: e.target.value})}
-                  className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none bg-white shadow-sm"
-                />
+            <div className="p-6 bg-slate-50 rounded-2xl border border-slate-200 space-y-4">
+               <h4 className="text-xs font-black uppercase tracking-widest text-slate-400 border-b pb-2">Owner Identity & Regulatory Details</h4>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1">Owner / Entity Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.ownerName}
+                    onChange={e => setFormData({...formData, ownerName: e.target.value})}
+                    className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none bg-white shadow-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1">Felling License No.</label>
+                  <input
+                    type="text"
+                    value={formData.fellingLicenseNumber}
+                    onChange={e => setFormData({...formData, fellingLicenseNumber: e.target.value})}
+                    className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none bg-white shadow-sm"
+                    placeholder="e.g. TFL-123456"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1">Owner Email</label>
+                  <input
+                    type="email"
+                    value={formData.ownerEmail}
+                    onChange={e => setFormData({...formData, ownerEmail: e.target.value})}
+                    className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none bg-white shadow-sm"
+                    placeholder="owner@example.com"
+                  />
+                </div>
+                <div className="md:col-span-1">
+                   <label className="block text-sm font-semibold text-slate-700 mb-1">Owner IBAN (Bank Details)</label>
+                   <input
+                     type="text"
+                     value={formData.ownerIban}
+                     onChange={e => setFormData({...formData, ownerIban: e.target.value})}
+                     className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none bg-white shadow-sm"
+                     placeholder="IE00 XXXX ..."
+                   />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-slate-700 mb-1">Owner Address</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.ownerAddress}
+                    onChange={e => setFormData({...formData, ownerAddress: e.target.value})}
+                    className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none bg-white shadow-sm"
+                  />
+                </div>
               </div>
             </div>
 
@@ -206,6 +246,11 @@ const ForestManager: React.FC<ForestManagerProps> = ({ forests, onSave, onDelete
                     <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full uppercase tracking-tighter">Active Site</span>
                   </h3>
                   <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">{forest.location} • {forest.area} ha</p>
+                  <div className="mt-2 flex flex-wrap gap-4">
+                     {forest.fellingLicenseNumber && <span className="text-xs text-blue-600 font-bold">📜 Lic: {forest.fellingLicenseNumber}</span>}
+                     {forest.ownerEmail && <span className="text-xs text-slate-500 font-medium">📧 {forest.ownerEmail}</span>}
+                     {forest.ownerIban && <span className="text-xs text-slate-500 font-medium">🏦 IBAN: {forest.ownerIban.slice(0, 4)}...</span>}
+                  </div>
                 </div>
                 <div className="flex gap-2">
                   <button 

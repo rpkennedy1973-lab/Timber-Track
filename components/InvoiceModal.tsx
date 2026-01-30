@@ -146,11 +146,14 @@ const InvoiceModal: React.FC<InvoiceModalProps> = ({ extraction, forest, harvest
                   <div>
                     <p className="text-lg font-bold text-slate-900 leading-tight">{forest?.ownerName}</p>
                     <p className="text-slate-600 text-xs mt-1 whitespace-pre-line">{forest?.ownerAddress}</p>
+                    {forest?.ownerEmail && <p className="text-[10px] text-slate-500 font-medium mt-1">E: {forest.ownerEmail}</p>}
                   </div>
                 ) : tab === 'harvester' ? (
                   <div>
                     <p className="text-lg font-bold text-slate-900 leading-tight">{harvester?.name}</p>
                     <p className="text-slate-600 text-xs mt-1 whitespace-pre-line">{harvester?.address}</p>
+                    {harvester?.email && <p className="text-[10px] text-slate-500 font-medium mt-1">E: {harvester.email}</p>}
+                    {harvester?.vatNumber && <p className="text-[10px] font-black mt-2 uppercase border border-slate-200 inline-block px-2 py-0.5 rounded">VAT: {harvester.vatNumber}</p>}
                   </div>
                 ) : (
                   <div>
@@ -161,6 +164,9 @@ const InvoiceModal: React.FC<InvoiceModalProps> = ({ extraction, forest, harvest
                 <div className="mt-4 pt-4 border-t border-slate-50">
                    <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Estate / Site</p>
                    <p className="text-xs font-bold text-slate-800">{forest?.name}</p>
+                   {forest?.fellingLicenseNumber && (
+                     <p className="text-[10px] font-black text-blue-700 mt-1">FELLING LICENCE: {forest.fellingLicenseNumber}</p>
+                   )}
                 </div>
               </div>
               <div className="space-y-4">
@@ -202,7 +208,20 @@ const InvoiceModal: React.FC<InvoiceModalProps> = ({ extraction, forest, harvest
               </table>
             </div>
 
-            <div className="flex justify-end mb-12">
+            <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-12">
+               <div className="flex-1">
+                 {(tab === 'forest' && forest?.ownerIban) || (tab === 'harvester' && harvester?.iban) || (tab === 'customer' && companyDetails.iban) ? (
+                   <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 max-w-sm">
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest border-b pb-1 mb-2">
+                        {tab === 'customer' ? 'Remittance Bank Details' : 'Payee Bank Details'}
+                      </p>
+                      <p className="text-[8px] font-black text-slate-400 uppercase">IBAN</p>
+                      <p className="text-xs font-bold text-slate-800 tracking-wider">
+                        {tab === 'forest' ? forest?.ownerIban : tab === 'harvester' ? harvester?.iban : companyDetails.iban}
+                      </p>
+                   </div>
+                 ) : null}
+               </div>
               <div className="w-64 space-y-3">
                 <div className="flex justify-between items-center text-slate-500 text-[10px] font-bold uppercase">
                   <span>Net Subtotal</span>

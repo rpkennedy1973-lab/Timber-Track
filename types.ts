@@ -7,6 +7,9 @@ export interface Forest {
   description: string;
   ownerName: string;
   ownerAddress: string;
+  ownerEmail?: string; // Added owner email
+  ownerIban?: string;  // Added owner IBAN
+  fellingLicenseNumber?: string; // Added felling license number
 }
 
 export interface Harvester {
@@ -14,6 +17,8 @@ export interface Harvester {
   name: string;
   address: string;
   vatNumber: string;
+  email?: string; // Added harvester email
+  iban?: string;  // Added harvester IBAN
 }
 
 export interface PrivateHaulier {
@@ -33,6 +38,7 @@ export interface CompanyDetails {
   vatNumber: string;
   phone?: string;  // Added phone field
   email?: string;  // Added email field
+  iban?: string;   // Added company bank IBAN
   forestVatRate: number;    // e.g., 5 for 5%
   harvesterVatRate: number; // e.g., 23 for 23%
   resaleVatRate: number;    // New field for customer resale

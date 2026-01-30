@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Harvester } from '../types';
 
@@ -16,6 +17,8 @@ const HarvesterManager: React.FC<HarvesterManagerProps> = ({ harvesters, onSave,
     name: '',
     address: '',
     vatNumber: '',
+    email: '',
+    iban: '',
   };
 
   const [formData, setFormData] = useState<Omit<Harvester, 'id'>>(emptyForm);
@@ -26,6 +29,8 @@ const HarvesterManager: React.FC<HarvesterManagerProps> = ({ harvesters, onSave,
       name: h.name,
       address: h.address,
       vatNumber: h.vatNumber,
+      email: h.email || '',
+      iban: h.iban || '',
     });
     setIsAdding(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -83,6 +88,16 @@ const HarvesterManager: React.FC<HarvesterManagerProps> = ({ harvesters, onSave,
                 />
               </div>
               <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1">Contact Email</label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={e => setFormData({...formData, email: e.target.value})}
+                  className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none bg-slate-50"
+                  placeholder="harvester@example.com"
+                />
+              </div>
+              <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-1">VAT Number</label>
                 <input
                   type="text"
@@ -90,6 +105,16 @@ const HarvesterManager: React.FC<HarvesterManagerProps> = ({ harvesters, onSave,
                   onChange={e => setFormData({...formData, vatNumber: e.target.value})}
                   className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none bg-slate-50"
                   placeholder="e.g. IE9876543B"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1">Bank IBAN</label>
+                <input
+                  type="text"
+                  value={formData.iban}
+                  onChange={e => setFormData({...formData, iban: e.target.value})}
+                  className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none bg-slate-50"
+                  placeholder="IE00 XXXX ..."
                 />
               </div>
               <div className="md:col-span-2">
@@ -135,10 +160,14 @@ const HarvesterManager: React.FC<HarvesterManagerProps> = ({ harvesters, onSave,
                 <h3 className="text-xl font-bold text-slate-800 leading-tight">{h.name}</h3>
                 <span className="text-[10px] bg-blue-50 text-blue-600 px-2.5 py-1 rounded-lg font-black uppercase tracking-tighter">Contractor</span>
               </div>
-              {h.vatNumber && (
-                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">VAT REG: {h.vatNumber}</p>
-              )}
-              <p className="text-sm text-slate-500 font-medium">{h.address}</p>
+              <div className="space-y-1">
+                 {h.email && <p className="text-xs text-slate-600 font-bold">📧 {h.email}</p>}
+                 {h.iban && <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">🏦 IBAN: {h.iban.slice(0, 4)}...</p>}
+                 {h.vatNumber && (
+                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">VAT REG: {h.vatNumber}</p>
+                 )}
+              </div>
+              <p className="text-sm text-slate-500 font-medium mt-3">{h.address}</p>
             </div>
             <div className="mt-8 flex justify-between items-center pt-6 border-t border-slate-50">
                <button 
