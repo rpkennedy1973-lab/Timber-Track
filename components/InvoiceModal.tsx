@@ -37,6 +37,18 @@ const InvoiceModal: React.FC<InvoiceModalProps> = ({ extraction, forest, harvest
     descriptionHeader = "Timber Products Sold";
   }
 
+  const formatCurrency = (val: number) => 
+    val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   // Calculate row-by-row data for the table
   const tableRows = extraction.items.map(item => {
     const product = products.find(p => p.id === item.productTypeId);
@@ -57,6 +69,7 @@ const InvoiceModal: React.FC<InvoiceModalProps> = ({ extraction, forest, harvest
     return {
       productName: product?.name || 'Unknown',
       docket: item.docketRef,
+      docketDate: item.docketDate,
       qty: item.quantity,
       rate,
       net
@@ -66,17 +79,6 @@ const InvoiceModal: React.FC<InvoiceModalProps> = ({ extraction, forest, harvest
   const subtotal = tableRows.reduce((sum, row) => sum + row.net, 0);
   const vatAmount = subtotal * (vatPercent / 100);
   const total = subtotal + vatAmount;
-
-  const formatCurrency = (val: number) => 
-    val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-  const formatDate = (dateStr: string) => {
-    const d = new Date(dateStr);
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const year = d.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
 
   const handlePrint = () => {
     const content = document.getElementById('printable-invoice-content')?.innerHTML;
@@ -188,7 +190,7 @@ const InvoiceModal: React.FC<InvoiceModalProps> = ({ extraction, forest, harvest
                 <thead>
                   <tr className="border-b border-slate-900 text-left text-[9px] uppercase tracking-widest font-black text-slate-400">
                     <th className="py-3">{descriptionHeader}</th>
-                    <th className="py-3 text-center">Docket Ref</th>
+                    <th className="py-3 text-center">Docket / Date</th>
                     <th className="py-3 text-center">Qty (t)</th>
                     <th className="py-3 text-right">Rate (€)</th>
                     <th className="py-3 text-right">Net</th>
@@ -198,7 +200,10 @@ const InvoiceModal: React.FC<InvoiceModalProps> = ({ extraction, forest, harvest
                   {tableRows.map((row, idx) => (
                     <tr key={idx}>
                       <td className="py-4 text-sm font-bold text-slate-900">{row.productName}</td>
-                      <td className="py-4 text-center text-xs font-bold text-slate-400 tracking-wider">{row.docket}</td>
+                      <td className="py-4 text-center">
+                        <span className="text-xs font-bold text-slate-800 block">{row.docket}</span>
+                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{formatDate(row.docketDate)}</span>
+                      </td>
                       <td className="py-4 text-center text-sm font-bold text-slate-600">{row.qty.toLocaleString()}</td>
                       <td className="py-4 text-right text-sm font-medium text-slate-600">€{formatCurrency(row.rate)}</td>
                       <td className="py-4 text-right text-sm font-black text-slate-900">€{formatCurrency(row.net)}</td>

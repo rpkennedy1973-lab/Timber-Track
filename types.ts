@@ -64,6 +64,7 @@ export interface ExtractionItem {
   id: string;
   productTypeId: string;
   docketRef: string;
+  docketDate: string; // Added docket date
   quantity: number;
   baseCostPerTonne: number;
   harvestingRatePerTonne: number;

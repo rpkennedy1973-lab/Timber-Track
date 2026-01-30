@@ -29,7 +29,7 @@ const ExtractionLog: React.FC<ExtractionLogProps> = ({
   const [viewingInvoice, setViewingInvoice] = useState<Extraction | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   
-  const createEmptyItem = (fId?: string): ExtractionItem => {
+  const createEmptyItem = (fId?: string, returnDate?: string): ExtractionItem => {
     const defaultProdId = products.length > 0 ? products[0].id : '';
     let rates = { base: 0, harvest: 0, transport: 0 };
     
@@ -44,6 +44,7 @@ const ExtractionLog: React.FC<ExtractionLogProps> = ({
       id: (Date.now() + Math.random()).toString(),
       productTypeId: defaultProdId,
       docketRef: '',
+      docketDate: returnDate || new Date().toISOString().split('T')[0],
       quantity: 0,
       baseCostPerTonne: rates.base,
       harvestingRatePerTonne: rates.harvest,
@@ -58,7 +59,7 @@ const ExtractionLog: React.FC<ExtractionLogProps> = ({
     destination: 'Resold',
     buyer: '',
     harvesterId: harvesters.length > 0 ? harvesters[0].id : '',
-    items: [createEmptyItem(forests.length > 0 ? forests[0].id : undefined)],
+    items: [createEmptyItem(forests.length > 0 ? forests[0].id : undefined, new Date().toISOString().split('T')[0])],
   };
 
   const [formData, setFormData] = useState(initialForm);
@@ -88,7 +89,7 @@ const ExtractionLog: React.FC<ExtractionLogProps> = ({
   const handleAddItem = () => {
     setFormData(prev => ({ 
       ...prev, 
-      items: [...prev.items, createEmptyItem(prev.forestId)] 
+      items: [...prev.items, createEmptyItem(prev.forestId, prev.date)] 
     }));
   };
 
@@ -224,10 +225,12 @@ const ExtractionLog: React.FC<ExtractionLogProps> = ({
             onClick={() => {
               setEditingId(null);
               const defaultForestId = forests.length > 0 ? forests[0].id : '';
+              const today = new Date().toISOString().split('T')[0];
               setFormData({
                 ...initialForm,
                 forestId: defaultForestId,
-                items: [createEmptyItem(defaultForestId)]
+                date: today,
+                items: [createEmptyItem(defaultForestId, today)]
               });
               setIsAdding(true);
             }}
@@ -325,7 +328,7 @@ const ExtractionLog: React.FC<ExtractionLogProps> = ({
                <div className="space-y-3">
                   {formData.items.map((item) => (
                     <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end p-4 bg-slate-50 rounded-2xl border border-slate-100 relative group animate-fadeIn">
-                       <div className="md:col-span-3">
+                       <div className="md:col-span-2">
                           <label className="block text-[10px] font-black text-slate-400 uppercase mb-1">Product</label>
                           <select
                             required
@@ -349,6 +352,16 @@ const ExtractionLog: React.FC<ExtractionLogProps> = ({
                           />
                        </div>
                        <div className="md:col-span-2">
+                          <label className="block text-[10px] font-black text-slate-400 uppercase mb-1">Docket Date</label>
+                          <input
+                            type="date"
+                            required
+                            className="w-full px-2 py-2 border rounded-xl outline-none bg-white text-xs font-bold"
+                            value={item.docketDate}
+                            onChange={e => updateItem(item.id, { docketDate: e.target.value })}
+                          />
+                       </div>
+                       <div className="md:col-span-1">
                           <label className="block text-[10px] font-black text-slate-400 uppercase mb-1">Qty (t)</label>
                           <input
                             type="number"
@@ -359,25 +372,34 @@ const ExtractionLog: React.FC<ExtractionLogProps> = ({
                             onChange={e => updateItem(item.id, { quantity: parseFloat(e.target.value) || 0 })}
                           />
                        </div>
-                       {formData.destination === 'Resold' && (
-                         <div className="md:col-span-2">
-                            <label className="block text-[10px] font-black text-slate-400 uppercase mb-1">Sale Rate (€/t)</label>
-                            <input
-                              type="number"
-                              step="0.01"
-                              required
-                              className="w-full px-3 py-2 border rounded-xl outline-none bg-emerald-50 text-emerald-700 text-xs font-black"
-                              value={item.salePricePerTonne}
-                              onChange={e => updateItem(item.id, { salePricePerTonne: parseFloat(e.target.value) || 0 })}
-                            />
+                       {formData.destination === 'Resold' ? (
+                         <>
+                          <div className="md:col-span-2">
+                              <label className="block text-[10px] font-black text-slate-400 uppercase mb-1">Sale Rate (€/t)</label>
+                              <input
+                                type="number"
+                                step="0.01"
+                                required
+                                className="w-full px-3 py-2 border rounded-xl outline-none bg-emerald-50 text-emerald-700 text-xs font-black"
+                                value={item.salePricePerTonne}
+                                onChange={e => updateItem(item.id, { salePricePerTonne: parseFloat(e.target.value) || 0 })}
+                              />
+                          </div>
+                          <div className="md:col-span-2 flex flex-col justify-end">
+                            <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Line Net Cost</p>
+                            <p className="text-xs font-bold text-slate-900 bg-white border px-3 py-2 rounded-xl">
+                                €{formatCurrency(item.quantity * (item.baseCostPerTonne + item.harvestingRatePerTonne + item.transportRatePerTonne))}
+                            </p>
+                          </div>
+                         </>
+                       ) : (
+                         <div className="md:col-span-4 flex flex-col justify-end">
+                            <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Line Net Cost</p>
+                            <p className="text-xs font-bold text-slate-900 bg-white border px-3 py-2 rounded-xl">
+                                €{formatCurrency(item.quantity * (item.baseCostPerTonne + item.harvestingRatePerTonne + item.transportRatePerTonne))}
+                            </p>
                          </div>
                        )}
-                       <div className="md:col-span-2 flex flex-col justify-end">
-                          <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Line Net Cost</p>
-                          <p className="text-xs font-bold text-slate-900 bg-white border px-3 py-2 rounded-xl">
-                             €{formatCurrency(item.quantity * (item.baseCostPerTonne + item.harvestingRatePerTonne + item.transportRatePerTonne))}
-                          </p>
-                       </div>
                        <div className="md:col-span-1 text-right">
                           <button 
                             type="button" 
